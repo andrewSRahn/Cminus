@@ -6,30 +6,61 @@ import java.util.HashMap;
 public class Parser {
 		ArrayList<String> nonterminals;
 		ArrayList<String> terminals;
-		HashMap<String, ArrayList<String>> productions;
+		ArrayList<Production> productions;
 	
 	public Parser() {
 		Grammar grammar = new Grammar();
-		this.nonterminals = grammar.nonterminals;
-		this.terminals = grammar.terminals;
-		this.productions = grammar.productions;
+		this.nonterminals = Grammar.nonterminals;
+		this.terminals = Grammar.terminals;
+		this.productions = Grammar.productions;
+	}
+	
+	public boolean nullable(String input){
+		// calculating
+		ArrayList<String> tokens = this.tokenize(input);
+		HashMap<String, Boolean> nullable = new HashMap<String, Boolean>();
 		
+		for (String s: this.terminals) {
+			nullable.put(s, new Boolean(false));
+		}
 		
+		for (String s: this.nonterminals) {
+			System.out.println(s);
+			for (Production p: this.productions) {
+				if (p.rightTokensContains("empty")) {
+					System.out.println(p.toString());
+					System.out.println("contains empty");
+				}
+			}
+			
+		}
+
+
+		for (Production p: this.productions) {
+
+	
+		}
+		return true;
 		
 	}
 	
-	public boolean nullable(String a){
-		boolean nullable;
-		
-		
-		
-		
-		return nullable;
-		
+	
+	private ArrayList<String> tokenize(String a){
+		ArrayList<String> value = new ArrayList<String>();
+		String[] split = a.split(" ");
+		for(String s: split){
+			if( s.trim().length() < 1){
+				continue;
+			}
+			else{
+				value.add(s);
+			}
+		}
+		return value;
 	}
 	
-	private ArrayList<String>rightTokenize(String input){
-		String[] split = input.split("::");
+	private ArrayList<String>rightTokenize(String production){
+		String[] split = production.split("::");
 		split = split[1].split(" ");
 		
 		ArrayList<String> value = new ArrayList<String>();

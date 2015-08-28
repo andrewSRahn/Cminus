@@ -11,7 +11,7 @@ import java.util.Scanner;
 public class Grammar {
 	public static ArrayList<String> terminals = new ArrayList<String>();
 	public static ArrayList<String> nonterminals = new ArrayList<String>();
-	public static HashMap<String, ArrayList<String>> productions = new HashMap<String, ArrayList<String>>();
+	public static ArrayList<Production> productions = new ArrayList<Production>();
 	
 	public Grammar() {
 		this.read();
@@ -46,23 +46,7 @@ public class Grammar {
 		try {
 			s = new Scanner(new BufferedReader(new FileReader("src\\input\\productions.txt")));
 			while (s.hasNext()) {
-				String current = s.nextLine();
-				String[] split = current.split("::");
-				
-				String left = split[0];
-				String right = split[1];
-				
-				if(productions.containsKey(left)){
-					ArrayList<String> old = productions.get(left);
-					old.add(right);
-					productions.put(left, old);
-				}
-				else{
-					ArrayList<String> o = new ArrayList<String>();
-					o.add(right);
-					productions.put(left, o);
-				}
-				
+				productions.add(new Production(s.nextLine()));
 			}
 		} catch (FileNotFoundException e) {
 			System.out.println("production read has failed");
