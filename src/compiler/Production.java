@@ -2,6 +2,14 @@ package compiler;
 
 import java.util.ArrayList;
 
+/*
+ * Sample production  		Ss :: if ( E ) S else S
+ * 				full 		Ss :: if ( E ) S else S
+ * 				left		Ss
+ * 				right		if ( E ) S else S
+ * 				rightTokens	[if, (, E, ), S, else, S]
+ * 
+ */
 public class Production {
 	String full;
 	String left;
@@ -10,7 +18,7 @@ public class Production {
 	
 	public Production(String full) {
 		this.full = full;
-		this.left = full.split("::")[0];
+		this.left = full.split("::")[0].trim();
 		this.right = full.split("::")[1].trim();
 		this.rightTokens = new ArrayList<String>();
 		String[] split = right.split(" ");
@@ -18,16 +26,6 @@ public class Production {
 			this.rightTokens.add(s);
 		}
 	}
-	
-	public boolean rightTokensContains(String query) {
-		for (String s: rightTokens) {
-			if (s.equals(query)) {
-				return true;
-			}
-		}
-		return false;
-	}
-	
 	public String toString() {
 		return full;
 	}
