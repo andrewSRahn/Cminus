@@ -10,105 +10,42 @@ import java.util.HashSet;
  * 
  */
 public class Parser {
-	HashMap<String, HashSet<String>> first;
-	
 	
 	public Parser() {
+		@SuppressWarnings("unused")
 		Grammar grammar = new Grammar();
-		
-	}
-	
-	private void printFirst(HashSet<String> first) {
-		
-	}
-	
-	
-	/*
-	 * Helper method for first
-	 * Handles the calculation and stores into HashMap first.
-	 * Handles in order of:  terminals, nonterminals, productions
-	 */
-	private HashSet<String> calculateFirst(String input) {
-		HashMap<String, HashSet<String>> first = 
-				new HashMap<String, HashSet<String>>();
-		
-		//terminals
-		for (String s: Grammar.terminals) {
-			HashSet<String> a = new HashSet<String>();
-			a.add(s);
-			first.put(s, a);
-		}
-		
-		//nonterminals
-		for (String s: Grammar.nonterminals) {
-			first.put(s, new HashSet<String>());
-		}
-		
-		//productions
-		boolean again = true;
-		while (again) {
-			again = false;
-			for (Production p: Grammar.productions) {
-				// handling production with "empty"
-				if (first.get(p.rightTokens.get(0)) == null) {
-					continue;
-				}
-				
-				HashSet<String> set = first.get(p.left);
-				set.addAll(first.get(p.rightTokens.get(0)));
-				
-				
-				String query = "";
-				for (int i = 2; i < p.rightTokens.size() + 1; i++) {
-					query += p.rightTokens.get(i-2);
-					if (this.nullable(query)) {
-						HashSet<String> old = set;
-						set.addAll(first.get(p.rightTokens.get(i-1)));
-						if (!set.equals(old)) {
-							again = true;
-						}
-					}
-					
-					if (i == p.rightTokens.size()) {
-						continue;
-					}
-					query += " ";
-				}
-			}
-		}
-		
-		
-		return first.get(input);
 	}
 	
 	/*
-	 * Public access first method.
+	 * Public method for first
 	 */
 	public HashSet<String> first(String input) {
 		ArrayList<String> tokens = this.tokenize(input);
-
 		
-		int position = -1;
-		for (int i = 0; i < tokens.size(); i++) {
-			if (this.nullable(tokens.get(i))) {
-				continue;
-			}
-			if (!this.nullable(tokens.get(i))) {
-				position = i;
-				break;
-			}
-		}
-		
-		
-		HashSet<String> set = this.calculateFirst(tokens.get(0));
-		
-		for (int i = 0; i <= position; i++) {
-			set.addAll(this.calculateFirst(tokens.get(i)));
+		if (tokens.size() == 1) {
+			HashSet<String> first = new HashSet<String>();
+			String a = tokens.get(0);
 			
+			if (Grammar.terminals.contains(a) || a.equals("empty")) {
+				first.add(a);
+				return first;
+			}
+			else if (Grammar.nonterminals.contains(a)) {
+				for (Production p: Grammar.productions) {
+					if (p.left.equals(a)) {
+						first.addAll(this.first(p.right));
+					}
+				}
+				return first;
+			}
 		}
 		
+		else if (tokens.size() > 1) {
+			HashSet<String> first = new HashSet<String>();
+			System.out.println("reached");
+		}
 		
-		return set;
+		return new HashSet<String>();
 		
 	}
 	
@@ -120,6 +57,9 @@ public class Parser {
 	 */
 	private boolean calculateNullable(String input){
 		HashMap<String, Boolean> nullable = new HashMap<String, Boolean>();
+		
+		// empty string
+		nullable.put("empty", new Boolean(true));
 		
 		// terminals
 		for (String s: Grammar.terminals) {
@@ -166,7 +106,6 @@ public class Parser {
 				}	
 			}
 		}
-		
 		return nullable.get(input);
 	}
 	
@@ -176,6 +115,18 @@ public class Parser {
 	 */
 	public boolean nullable(String input) {
 		ArrayList<String> inputTokens = this.tokenize(input);
+		
+		for (String s: inputTokens) {
+			try {
+				this.calculateNullable(s);
+			}
+			catch (NullPointerException e){
+				System.out.println("Nullable:  invalid input.");
+				e.printStackTrace();
+				return false;
+			}
+		}
+		
 		if (inputTokens.size() == 0) {
 			return true;
 		}
@@ -209,69 +160,13 @@ public class Parser {
 		ArrayList<String> value = new ArrayList<String>();
 		String[] split = a.split(" ");
 		for(String s: split){
-			if( s.trim().length() < 1){
+			if(s.trim().length() < 1){
 				continue;
 			}
 			else{
-				value.add(s);
+				value.add(s.trim());
 			}
 		}
 		return value;
 	}
-	
-	private ArrayList<String>rightTokenize(String production){
-		String[] split = production.split("::");
-		split = split[1].split(" ");
-		
-		ArrayList<String> value = new ArrayList<String>();
-		for(String s: split){
-			if( s.trim().length() < 1 ){
-				System.out.println("hit");
-				continue;
-				
-			}
-			else {
-				value.add(s);
-			}
-			
-		}
-		System.out.println(value.toString());
-		
-		
-		return value;
-	}
-	
-	private int nonterminalCount(ArrayList<String> tokens){
-
-		System.out.println(Grammar.nonterminals.size());
-		System.out.println(Grammar.terminals.size());
-		int count = 0;
-		for( String s: Grammar.nonterminals){
-			if(tokens.contains(s)){
-				count += 1;
-			}
-		}
-		return count;
-		
-	}
-	
-	private int nonterminalPosition(ArrayList<String> tokens){
-		int position = -1;
-		for (int i = 0; i < tokens.size(); i++) {
-			String current = tokens.get(i);
-			if (Grammar.nonterminals.contains(current)) {
-				position = i;
-			}
-		}
-		if (position == -1){
-			System.out.println("nonterminal not found");
-		}
-		return position;
-		
-	}
-	
-
-	
-	
-
 }

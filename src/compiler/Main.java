@@ -15,9 +15,9 @@ public class Main {
 
 	public static void main(String[] args) {
 		Parser p = new Parser();
-		System.out.println(p.first("E"));
-		System.out.println(p.first("id"));
-		
+		System.out.println(p.first("Ss"));
+		System.out.println(p.first("empty"));
+		System.out.println(p.first("void"));
 	}
 
 }
