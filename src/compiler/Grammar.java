@@ -8,9 +8,9 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Grammar {
-	public static ArrayList<String> terminals = new ArrayList<String>();
-	public static ArrayList<String> nonterminals = new ArrayList<String>();
-	public static ArrayList<Production> productions = new ArrayList<Production>();
+	public ArrayList<String> terminals = new ArrayList<String>();
+	public ArrayList<String> nonterminals = new ArrayList<String>();
+	public ArrayList<Production> productions = new ArrayList<Production>();
 	
 	public Grammar() {
 		this.read();
