@@ -8,6 +8,8 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
+import java.util.ListIterator;
 
 /*
  * Parser contains a grammar.
@@ -35,10 +37,10 @@ public class Parser {
 		printMap(this.first, "first.txt");
 		printMap(this.follow, "follow.txt");
 		
-		augmentGrammar();
-		computeItems();
+		this.augmentedGrammar = augmentGrammar();
+		this.items = computeItems();
 		
-
+		System.out.println(this.items.toString());
 
 	}
 	
@@ -243,45 +245,54 @@ public class Parser {
 		boolean again = true;
 		while (again) {
 			again = false;
-			
-			for (Production p: grammar.productions) {
-				for (int i = 0; i < p.rightTokens.size() - 1; i++) {
-					String xi = p.rightTokens.get(i);
-					String xposti = getPosti(p.rightTokens, i);
-					
-					if (grammar.nonterminals.contains(xi)) {
-						HashSet<String> followOfxi = map.get(xi);
-						HashSet<String> firstOfxposti = solveFirst((xposti));
+			for (String x: grammar.nonterminals) {
+				for (Production p: grammar.productions) {
+					if (p.rightTokens.contains(x)) {
 						
-						if (followOfxi.containsAll(firstOfxposti) == false) {
-							again = true;
+						int indexOfx = p.rightTokens.indexOf(x);
+						
+						
+						if (indexOfx == p.rightTokens.size() - 1) {
+							HashSet<String> followOfx = map.get(x);
+							
+							if (followOfx.containsAll(map.get(p.left)) == false) {
+								again = true;
+							}
+							
+							followOfx.addAll(map.get(p.left));
+							map.put(x, followOfx);
+						}
+						else if (indexOfx < p.rightTokens.size() - 1) {
+							String beta = p.rightTokens.get(indexOfx + 1);
+							if (grammar.terminals.contains(beta)) {
+								HashSet<String> followOfx = map.get(x);
+								
+								if (followOfx.contains(beta) == false) {
+									again = true;
+								}
+								
+								followOfx.add(beta);
+								map.put(x, followOfx);
+							}
+							else {
+								HashSet<String> followOfx = map.get(x);
+								HashSet<String> firstOfbeta = this.first.get(beta);
+								firstOfbeta.remove("empty");
+								
+								if (followOfx.containsAll(firstOfbeta) == false) {
+									again = true;
+								}
+								
+								followOfx.addAll(firstOfbeta);
+								map.put(x, followOfx);
+							}
 						}
 						
-						followOfxi.addAll(firstOfxposti);
-						map.put(xi, followOfxi);
 					}
-				}
-				
-				for (int i = p.rightTokens.size() - 2; i > -1; i--) {
-					String xi = p.rightTokens.get(i);
-					String xposti = getPosti(p.rightTokens, i);
 					
-					if (grammar.nonterminals.contains(xi) &&
-							solveNullable(xposti) == true) {
-						HashSet<String> followOfxi = map.get(xi);
-						HashSet<String> followOfx = map.get(p.left);
-						
-						if (followOfxi.containsAll(followOfx)) {
-							again = true;
-						}
-						
-						followOfxi.addAll(followOfx);
-					}
 				}
 			}
-			
 		}
-
 		
 		return map;
 	}
@@ -293,8 +304,8 @@ public class Parser {
  * 
  */
 	
-	private void augmentGrammar() {
-		this.augmentedGrammar = new Grammar();
+	private Grammar augmentGrammar() {
+		augmentedGrammar = new Grammar();
 		
 		String l = this.augmentedGrammar.productions.get(0).left + "'";
 		l += " :: ";
@@ -302,28 +313,47 @@ public class Parser {
 		
 		Production p = new Production(l);
 		
-		this.augmentedGrammar.productions.add(0, p);
+		augmentedGrammar.productions.add(0, p);
+		return augmentedGrammar;
 	}
 	
-	private void computeItems() {
-		this.items = new ArrayList<ArrayList<Production>>();
+	private ArrayList<ArrayList<Production>> computeItems() {
+		items = new ArrayList<ArrayList<Production>>();
 		
 		ArrayList<Production> item0 = new ArrayList<Production>();
 		
 		item0.add(insertDot(augmentedGrammar.productions.get(0)));
 		
 		item0 = closure(item0);
-		
-		
+		items.add(item0);
+		return items;
 	}
 	
-	private ArrayList<Production> closure(ArrayList<Production> item) {
-		for (Production p: item) {
-			System.out.println(p.rightTokens.indexOf(".") + " " + p.rightTokens.size());
+	private ArrayList<Production> closure(ArrayList<Production> input) {
+		boolean again = true;
+		while (again) {
+			again = false;
+			System.out.println(input);
+			
+			ArrayList<Production> buffer = new ArrayList<Production>();
+			for (Production p: input) {
+				int indexOfDot = p.rightTokens.indexOf(".");
+				if (indexOfDot > p.rightTokens.size() - 1) {
+					continue;
+				}
+				
+				String b = p.rightTokens.get(indexOfDot + 1);
+				for (Production q: augmentedGrammar.productions) {
+					if (q.left.equals(b)) {
+						if (buffer.contains(insert(q)))
+						buffer.add(insertDot(q));						
+					}
+				}
+				
+			}
+			input.addAll(buffer);
 		}
-		
-		
-		return item;
+		return input;
 	}
 	
 
