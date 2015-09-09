@@ -25,16 +25,21 @@ public class Parser {
 	Grammar augmentedGrammar;
 	HashMap<String, HashSet<String>> first;
 	HashMap<String, HashSet<String>> follow;
+	ArrayList<ArrayList<Production>> items;
 	
 	
 	public Parser() {
 		this.grammar = new Grammar();
-		augmentGrammar();
 		this.first = computeFirst();
 		this.follow = computeFollow();
-
 		printMap(this.first, "first.txt");
 		printMap(this.follow, "follow.txt");
+		
+		augmentGrammar();
+		computeItems();
+		
+
+
 	}
 	
 
@@ -300,10 +305,32 @@ public class Parser {
 		this.augmentedGrammar.productions.add(0, p);
 	}
 	
+	private void computeItems() {
+		this.items = new ArrayList<ArrayList<Production>>();
+		
+		ArrayList<Production> item0 = new ArrayList<Production>();
+		
+		item0.add(insertDot(augmentedGrammar.productions.get(0)));
+		
+		item0 = closure(item0);
+		
+		
+	}
+	
+	private ArrayList<Production> closure(ArrayList<Production> item) {
+		for (Production p: item) {
+			System.out.println(p.rightTokens.indexOf(".") + " " + p.rightTokens.size());
+		}
+		
+		
+		return item;
+	}
+	
+
 	
 	
 /*-------------------------------------------------------------------------------------------------------
- * Section XI: Utilities
+ * Section XI: Utilities for First and Follow
  * 
  * private void printMap(HashMap<String, HashSet<String>> map)
  * private ArrayList<String> tokenize(String a)
@@ -397,5 +424,25 @@ public class Parser {
 			s += " ";
 		}
 		return s;
+	}
+/*-------------------------------------------------------------------------------------------------------
+ * Section XII: Utilities for Closure and Goto
+ * 
+ * private Production insertDot(Production p) 
+ */
+	private Production insertDot(Production p) {
+		p.rightTokens.add(0, ".");
+		
+		String s = "";
+		s += p.left;
+		s += " :: ";
+		for (int i = 0; i < p.rightTokens.size(); i++) {
+			s += p.rightTokens.get(i);
+			if (i == p.rightTokens.size() -1 ) {
+				break;
+			}
+			s += " ";
+		}
+		return new Production(s);
 	}
 }
