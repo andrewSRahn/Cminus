@@ -5,11 +5,10 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
-import java.util.ListIterator;
 
 /*
  * Parser contains a grammar.
@@ -24,10 +23,11 @@ import java.util.ListIterator;
  */
 public class Parser {
 	Grammar grammar;
-	Grammar augmentedGrammar;
 	HashMap<String, HashSet<String>> first;
 	HashMap<String, HashSet<String>> follow;
-	ArrayList<ArrayList<Production>> items;
+	
+	Grammar augmentedGrammar;
+	ArrayList<HashSet<Item>> items;
 	
 	
 	public Parser() {
@@ -37,22 +37,27 @@ public class Parser {
 		printMap(this.first, "first.txt");
 		printMap(this.follow, "follow.txt");
 		
-		this.augmentedGrammar = augmentGrammar();
+		this.augmentedGrammar = new Grammar();
+		this.augmentedGrammar.augment();
+		
 		this.items = computeItems();
 		
-		System.out.println(this.items.toString());
-
+		
+		
+		
 	}
 	
 
 	
-/*-------------------------------------------------------------------------------------------------------
+
+
+
+	/*-------------------------------------------------------------------------------------------------------
  * Section II: Nullable
  * 
  * private boolean computeNullable(String input)
  * public boolean solveNullable(String input)
  */
-	
 	private boolean computeNullable(String input){
 		HashMap<String, Boolean> nullable = new HashMap<String, Boolean>();
 		
@@ -300,72 +305,87 @@ public class Parser {
 /*-------------------------------------------------------------------------------------------------------
  * Section V: Item Sets
  * 
- * private void augmentGrammar() 
+ * 
  * 
  */
 	
-	private Grammar augmentGrammar() {
-		augmentedGrammar = new Grammar();
+	private ArrayList<HashSet<Item>> computeItems() {
+		Item i = new Item(this.augmentedGrammar.productions.get(0));
+		HashSet<Item> c = new HashSet<Item>();
+		c.add(i);
 		
-		String l = this.augmentedGrammar.productions.get(0).left + "'";
-		l += " :: ";
-		l += this.augmentedGrammar.productions.get(0).left;
+		c = closure(c);
+		System.out.println(c);
 		
-		Production p = new Production(l);
 		
-		augmentedGrammar.productions.add(0, p);
-		return augmentedGrammar;
+		
+		
+		return null;
 	}
+
+
+
 	
-	private ArrayList<ArrayList<Production>> computeItems() {
-		items = new ArrayList<ArrayList<Production>>();
-		
-		ArrayList<Production> item0 = new ArrayList<Production>();
-		
-		item0.add(insertDot(augmentedGrammar.productions.get(0)));
-		
-		item0 = closure(item0);
-		items.add(item0);
-		return items;
-	}
-	
-	private ArrayList<Production> closure(ArrayList<Production> input) {
-		boolean again = true;
-		while (again) {
-			again = false;
-			System.out.println(input);
-			
-			ArrayList<Production> buffer = new ArrayList<Production>();
-			for (Production p: input) {
-				int indexOfDot = p.rightTokens.indexOf(".");
-				if (indexOfDot > p.rightTokens.size() - 1) {
-					continue;
-				}
-				
-				String b = p.rightTokens.get(indexOfDot + 1);
-				for (Production q: augmentedGrammar.productions) {
-					if (q.left.equals(b)) {
-						if (buffer.contains(insert(q)))
-						buffer.add(insertDot(q));						
-					}
-				}
-				
-			}
-			input.addAll(buffer);
-		}
-		return input;
-	}
 	
 
 	
 	
-/*-------------------------------------------------------------------------------------------------------
- * Section XI: Utilities for First and Follow
+	
+	private HashSet<Item> closure(HashSet<Item> i) {
+		HashSet<Item> j = i;
+		
+		boolean again = true;
+		while (again) { 
+			again = false;
+			
+			HashSet<Item> buffer = new HashSet<Item>();
+			for (Item a: j) {
+				for (Production b: this.augmentedGrammar.productions) {
+					String Btoken = a.tokenNextOfDot;
+					Production Bproduction = null;
+					
+					if (b.left.equals(Btoken)) {
+						Bproduction = b;
+					}
+					else {
+						continue;
+					}
+					
+					Item Bitem = new Item(Bproduction);
+					
+					
+					for (Item x: j) {
+						System.out.println(Bitem.full.equals(x.full));
+					}
+					System.out.println(Bitem.full);
+
+				}
+			}
+			
+
+			
+		
+			
+			System.out.println(j.size());
+		}
+		
+		return j;
+	}
+
+
+
+
+
+
+	/*-------------------------------------------------------------------------------------------------------
+ * Section XI: Utilities
  * 
  * private void printMap(HashMap<String, HashSet<String>> map)
  * private ArrayList<String> tokenize(String a)
  * private String getPostx0(ArrayList<String> tokens)
  * private String getPrei(ArrayList<String> tokens)
+ * 
+ * private boolean containsDot(HashSet<Production> set) 
  */
 	private void printMap(HashMap<String, HashSet<String>> map, String file) {		
 		Path p = Paths.get(System.getProperty("user.dir"), "src", "output", file);
@@ -382,7 +402,7 @@ public class Parser {
 		}
 	}
 	
-	private ArrayList<String> tokenize(String a){
+	ArrayList<String> tokenize(String a){
 		if (a.length() == 0) {
 			System.out.println("private ArrayList<String> tokenize(String a)");
 			System.out.println("a.length() == 0");
@@ -455,24 +475,21 @@ public class Parser {
 		}
 		return s;
 	}
-/*-------------------------------------------------------------------------------------------------------
- * Section XII: Utilities for Closure and Goto
- * 
- * private Production insertDot(Production p) 
- */
-	private Production insertDot(Production p) {
-		p.rightTokens.add(0, ".");
-		
-		String s = "";
-		s += p.left;
-		s += " :: ";
-		for (int i = 0; i < p.rightTokens.size(); i++) {
-			s += p.rightTokens.get(i);
-			if (i == p.rightTokens.size() -1 ) {
-				break;
-			}
-			s += " ";
+	
+	private boolean peekItems(HashSet<Item> h, String full) {
+		if (full.isEmpty()) {
+			System.out.println("private boolean peekItems(HashSet<Item> h, String s)");
+			System.out.println("String s is empty");
+			throw new InvalidParameterException();
 		}
-		return new Production(s);
+		
+		for (Item i: h) {
+			if (i.full == full) {
+				return true;
+			}
+		}
+		return false;
 	}
+	
+
 }

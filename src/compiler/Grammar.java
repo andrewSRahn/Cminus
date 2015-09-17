@@ -53,7 +53,14 @@ public class Grammar {
 		}
 		s.close();
 	}
-
 	
-
+	
+	public void augment() {
+		String l = this.productions.get(0).left + "'";
+		l += " :: ";
+		l += this.productions.get(0).left;
+		
+		Production p = new Production(l);
+		this.productions.add(0, p);
+	}
 }

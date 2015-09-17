@@ -1,5 +1,6 @@
 package compiler;
 
+import java.security.InvalidParameterException;
 import java.util.ArrayList;
 
 /*
@@ -17,18 +18,25 @@ public class Production {
 	ArrayList<String> rightTokens;
 	
 	public Production(String full) {
+		if (full.contains("::") == false) {
+			System.out.println("Item constructor:  incorrect input");
+			System.out.println(full);
+			throw new InvalidParameterException();
+		}
+		
 		this.full = full;
 		this.left = full.split("::")[0].trim();
 		this.right = full.split("::")[1].trim();
 		this.rightTokens = new ArrayList<String>();
+		
+
 		String[] split = right.split(" ");
 		for (String s: split) {
 			this.rightTokens.add(s);
 		}
 	}
+	
 	public String toString() {
 		return full;
 	}
-	
-	
 }
