@@ -9,6 +9,8 @@ import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
+import java.util.ListIterator;
 
 /*
  * Parser contains a grammar.
@@ -27,7 +29,7 @@ public class Parser {
 	HashMap<String, HashSet<String>> follow;
 	
 	Grammar augmentedGrammar;
-	ArrayList<HashSet<Item>> items;
+	HashMap<Integer, ArrayList<ProductionWithDot>> items;
 	
 	
 	public Parser() {
@@ -292,13 +294,10 @@ public class Parser {
 								map.put(x, followOfx);
 							}
 						}
-						
 					}
-					
 				}
 			}
 		}
-		
 		return map;
 	}
 
@@ -309,39 +308,26 @@ public class Parser {
  * 
  */
 	
-	private ArrayList<HashSet<Item>> computeItems() {
-		Item i = new Item(this.augmentedGrammar.productions.get(0));
-		HashSet<Item> c = new HashSet<Item>();
-		c.add(i);
-		
-		c = closure(c);
-		System.out.println(c);
+	private HashMap<Integer, ArrayList<ProductionWithDot>> computeItems() {
+		HashMap<Integer, ArrayList<ProductionWithDot>> items = new HashMap<Integer, ArrayList<ProductionWithDot>>();
+		ArrayList<ProductionWithDot> item0 = new ArrayList<ProductionWithDot>();
 		
 		
 		
-		
-		return null;
+		return new  HashMap<Integer, ArrayList<ProductionWithDot>>();
 	}
-
-
-
 	
-	
-
-	
-	
-	
-	private HashSet<Item> closure(HashSet<Item> i) {
-		HashSet<Item> j = i;
+	private ArrayList<ProductionWithDot> closure(ArrayList<ProductionWithDot> i) {
+		ArrayList<ProductionWithDot> j = i;
 		
 		boolean again = true;
 		while (again) { 
 			again = false;
 			
-			HashSet<Item> buffer = new HashSet<Item>();
-			for (Item a: j) {
-				for (Production b: this.augmentedGrammar.productions) {
-					String Btoken = a.tokenNextOfDot;
+			for (Production b: this.augmentedGrammar.productions){
+				for (ListIterator<ProductionWithDot> a = j.listIterator(); a.hasNext();) {
+					ProductionWithDot c = a.next();
+					String Btoken = c.tokenNextOfDot;
 					Production Bproduction = null;
 					
 					if (b.left.equals(Btoken)) {
@@ -351,33 +337,49 @@ public class Parser {
 						continue;
 					}
 					
-					Item Bitem = new Item(Bproduction);
+					ProductionWithDot Bitem = new ProductionWithDot(Bproduction);
 					
-					
-					for (Item x: j) {
-						System.out.println(Bitem.full.equals(x.full));
+					boolean flag = false;
+					for (ProductionWithDot x: j) {
+						if (Bitem.full.equals(x.full)) {
+							flag = true;
+						}
 					}
-					System.out.println(Bitem.full);
-
+					
+					if (flag == true) {
+						continue;
+					}
+					else {
+						a.add(Bitem);
+						again = true;
+					}
 				}
 			}
-			
-
-			
-		
-			
-			System.out.println(j.size());
 		}
+		return j;
+	}
+
+	private ArrayList<ProductionWithDot> goTo(ArrayList<ProductionWithDot> i, String token) {
+		ArrayList<ProductionWithDot> j = new ArrayList<ProductionWithDot>();
+		
+		for (ProductionWithDot k: i) {
+			if (token.equals(k.tokenNextOfDot)) {
+				ProductionWithDot l = new ProductionWithDot(k);
+				l.shiftDot();
+
+				if (itemCheck(i, l) == false) {
+					j.add(l);
+				}
+			}
+		}
+		
+		j = closure(j);
 		
 		return j;
 	}
 
 
-
-
-
-
-	/*-------------------------------------------------------------------------------------------------------
+/*-------------------------------------------------------------------------------------------------------
  * Section XI: Utilities
  * 
  * private void printMap(HashMap<String, HashSet<String>> map)
@@ -385,9 +387,8 @@ public class Parser {
  * private String getPostx0(ArrayList<String> tokens)
  * private String getPrei(ArrayList<String> tokens)
  * 
- * private boolean containsDot(HashSet<Production> set) 
  */
-	private void printMap(HashMap<String, HashSet<String>> map, String file) {		
+	public void printMap(HashMap<String, HashSet<String>> map, String file) {		
 		Path p = Paths.get(System.getProperty("user.dir"), "src", "output", file);
 		
 		try (BufferedWriter writer = Files.newBufferedWriter(p)) {
@@ -402,7 +403,7 @@ public class Parser {
 		}
 	}
 	
-	ArrayList<String> tokenize(String a){
+	public ArrayList<String> tokenize(String a){
 		if (a.length() == 0) {
 			System.out.println("private ArrayList<String> tokenize(String a)");
 			System.out.println("a.length() == 0");
@@ -422,7 +423,7 @@ public class Parser {
 		return value;
 	}
 
-	private String getPostx0(ArrayList<String> tokens) {
+	public String getPostx0(ArrayList<String> tokens) {
 		if (tokens.size() == 0) {
 			System.out.println("private String getPostx0(ArrayList<String> tokens)");
 			System.out.println("tokens.size() == 0");
@@ -440,7 +441,7 @@ public class Parser {
 		return s;
 	}
 	
-	private String getPrei(ArrayList<String> tokens, int i) {
+	public String getPrei(ArrayList<String> tokens, int i) {
 		if (tokens.size() == 0) {
 			System.out.println("private String getPrei(ArrayList<String> tokens)");
 			System.out.println("tokens.size() == 0");
@@ -458,7 +459,7 @@ public class Parser {
 		return s;
 	}
 	
-	private String getPosti(ArrayList<String> tokens, int i) {
+	public String getPosti(ArrayList<String> tokens, int i) {
 		if (tokens.size() == 0) {
 			System.out.println("private String getPosti(ArrayList<String> tokens, int i)");
 			System.out.println("tokens.size() == 0");
@@ -476,20 +477,22 @@ public class Parser {
 		return s;
 	}
 	
-	private boolean peekItems(HashSet<Item> h, String full) {
-		if (full.isEmpty()) {
-			System.out.println("private boolean peekItems(HashSet<Item> h, String s)");
-			System.out.println("String s is empty");
-			throw new InvalidParameterException();
-		}
-		
-		for (Item i: h) {
-			if (i.full == full) {
+	public boolean itemCheck(ArrayList<ProductionWithDot> a, ProductionWithDot b) {
+		for (ProductionWithDot c: a) {
+			if (c.equals(b)) {
 				return true;
 			}
 		}
 		return false;
 	}
 	
-
+	public boolean itemsCheck(HashMap<Integer, ArrayList<ProductionWithDot>> a, ArrayList<ProductionWithDot> b) {
+		for (ArrayList<ProductionWithDot> c: a.values()) {
+			if (b.containsAll(c)) {
+				return true;
+			}
+			
+		}
+		return false;
+	}
 }
