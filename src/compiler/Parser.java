@@ -67,32 +67,32 @@ public class Parser {
 		nullable.put("empty", new Boolean(true));
 		
 		// terminals
-		for (String s: grammar.terminals) {
+		for (String s: grammar.getTerminals()) {
 			nullable.put(s, new Boolean(false));
 		}
 
 		// nonterminals
-		for (Production p: grammar.productions) {
-			if (nullable.containsKey(p.left)) {
-				if (nullable.get(p.left).booleanValue() == true) {
+		for (Production p: grammar.getProductions()) {
+			if (nullable.containsKey(p.getLeft())) {
+				if (nullable.get(p.getLeft()).booleanValue() == true) {
 					continue;
 				}
 			}
 			
-			if (p.rightTokens.contains("empty")) {
-				nullable.put(p.left, new Boolean(true));
+			if (p.getRightTokens().contains("empty")) {
+				nullable.put(p.getLeft(), new Boolean(true));
 			}
 			else {
-				nullable.put(p.left, new Boolean(false));
+				nullable.put(p.getLeft(), new Boolean(false));
 			}
 		}
 		
 		// productions
 		boolean again = true;
 		while (again) {
-			for (Production p: grammar.productions) {
-				int count = p.rightTokens.size();
-				for (String s: p.rightTokens) {
+			for (Production p: grammar.getProductions()) {
+				int count = p.getRightTokens().size();
+				for (String s: p.getRightTokens()) {
 					if (nullable.get(s) == null) {
 						count--;
 						continue;
@@ -103,7 +103,7 @@ public class Parser {
 				}
 				
 				if (count < 1) {
-					nullable.put(p.left, new Boolean(true));
+					nullable.put(p.getLeft(), new Boolean(true));
 					again = true;
 				}
 				else {
@@ -167,13 +167,13 @@ public class Parser {
 		hs.add("empty");
 		map.put("empty", hs);
 		
-		for (String s: grammar.terminals) {
+		for (String s: grammar.getTerminals()) {
 			HashSet<String> h = new HashSet<String>();
 			h.add(s);
 			map.put(s, h);
 		}
 		
-		for (String s: grammar.nonterminals) {
+		for (String s: grammar.getNonterminals()) {
 			HashSet<String> h = new HashSet<String>();
 			map.put(s, h);
 		}
@@ -182,9 +182,9 @@ public class Parser {
 		while (again) {
 			again = false;
 			
-			for (Production p: grammar.productions) {
-				HashSet<String> firstOfx = map.get(p.left);
-				HashSet<String> firstOfx0 = map.get(p.rightTokens.get(0));
+			for (Production p: grammar.getProductions()) {
+				HashSet<String> firstOfx = map.get(p.getLeft());
+				HashSet<String> firstOfx0 = map.get(p.getRightTokens().get(0));
 				
 				if (firstOfx.containsAll(firstOfx0) == false) {
 					again = true;
@@ -192,9 +192,9 @@ public class Parser {
 				
 				firstOfx.addAll(firstOfx0);
 				
-				for (int i = 1; i < p.rightTokens.size(); i++ ) {
-					if (solveNullable(getPrei(p.rightTokens, i))) {
-						HashSet<String> firstOfxi = map.get(p.rightTokens.get(i));
+				for (int i = 1; i < p.getRightTokens().size(); i++ ) {
+					if (solveNullable(getPrei(p.getRightTokens(), i))) {
+						HashSet<String> firstOfxi = map.get(p.getRightTokens().get(i));
 						
 						if (firstOfx.containsAll(firstOfxi) == false) {
 							again = true;
@@ -241,37 +241,37 @@ public class Parser {
 	private HashMap<String, HashSet<String>> computeFollow() {
 		HashMap<String, HashSet<String>> map = new HashMap<String, HashSet<String>>();
 		
-		for (String s: grammar.nonterminals) {
+		for (String s: grammar.getNonterminals()) {
 			map.put(s, new HashSet<String>());
 		}
 		
 		HashSet<String> buffer = new HashSet<String>();
 		buffer.add("$");
-		map.put(grammar.productions.get(0).left, buffer);
+		map.put(grammar.getProductions().get(0).getLeft(), buffer);
 		
 		boolean again = true;
 		while (again) {
 			again = false;
-			for (String x: grammar.nonterminals) {
-				for (Production p: grammar.productions) {
-					if (p.rightTokens.contains(x)) {
+			for (String x: grammar.getNonterminals()) {
+				for (Production p: grammar.getProductions()) {
+					if (p.getRightTokens().contains(x)) {
 						
-						int indexOfx = p.rightTokens.indexOf(x);
+						int indexOfx = p.getRightTokens().indexOf(x);
 						
 						
-						if (indexOfx == p.rightTokens.size() - 1) {
+						if (indexOfx == p.getRightTokens().size() - 1) {
 							HashSet<String> followOfx = map.get(x);
 							
-							if (followOfx.containsAll(map.get(p.left)) == false) {
+							if (followOfx.containsAll(map.get(p.getLeft())) == false) {
 								again = true;
 							}
 							
-							followOfx.addAll(map.get(p.left));
+							followOfx.addAll(map.get(p.getLeft()));
 							map.put(x, followOfx);
 						}
-						else if (indexOfx < p.rightTokens.size() - 1) {
-							String beta = p.rightTokens.get(indexOfx + 1);
-							if (grammar.terminals.contains(beta)) {
+						else if (indexOfx < p.getRightTokens().size() - 1) {
+							String beta = p.getRightTokens().get(indexOfx + 1);
+							if (grammar.getTerminals().contains(beta)) {
 								HashSet<String> followOfx = map.get(x);
 								
 								if (followOfx.contains(beta) == false) {
@@ -308,29 +308,29 @@ public class Parser {
  * 
  */
 	
-	private HashMap<Integer, ArrayList<ProductionWithDot>> computeItems() {
-		HashMap<Integer, ArrayList<ProductionWithDot>> items = new HashMap<Integer, ArrayList<ProductionWithDot>>();
-		ArrayList<ProductionWithDot> item0 = new ArrayList<ProductionWithDot>();
+	private HashMap<Integer, ArrayList<Production>> computeItems() {
+		HashMap<Integer, ArrayList<Production>> items = new HashMap<Integer, ArrayList<Production>>();
+		ArrayList<Production> item0 = new ArrayList<Production>();
 		
+		System.out.println(items.toString());
 		
-		
-		return new  HashMap<Integer, ArrayList<ProductionWithDot>>();
+		return new  HashMap<Integer, ArrayList<Production>>();
 	}
 	
-	private ArrayList<ProductionWithDot> closure(ArrayList<ProductionWithDot> i) {
-		ArrayList<ProductionWithDot> j = i;
+	private ArrayList<Production> closure(ArrayList<Production> i) {
+		ArrayList<Production> j = i;
 		
 		boolean again = true;
 		while (again) { 
 			again = false;
 			
-			for (Production b: this.augmentedGrammar.productions){
+			for (Production b: this.augmentedGrammar.getProductions()){
 				for (ListIterator<ProductionWithDot> a = j.listIterator(); a.hasNext();) {
 					ProductionWithDot c = a.next();
-					String Btoken = c.tokenNextOfDot;
+					String Btoken = c.getTokenNextOfDot();
 					Production Bproduction = null;
 					
-					if (b.left.equals(Btoken)) {
+					if (b.getLeft().equals(Btoken)) {
 						Bproduction = b;
 					}
 					else {
@@ -341,7 +341,7 @@ public class Parser {
 					
 					boolean flag = false;
 					for (ProductionWithDot x: j) {
-						if (Bitem.full.equals(x.full)) {
+						if (Bitem.getFull().equals(x.getFull())) {
 							flag = true;
 						}
 					}
@@ -363,7 +363,7 @@ public class Parser {
 		ArrayList<ProductionWithDot> j = new ArrayList<ProductionWithDot>();
 		
 		for (ProductionWithDot k: i) {
-			if (token.equals(k.tokenNextOfDot)) {
+			if (token.equals(k.getTokenNextOfDot())) {
 				ProductionWithDot l = new ProductionWithDot(k);
 				l.shiftDot();
 
@@ -392,7 +392,7 @@ public class Parser {
 		Path p = Paths.get(System.getProperty("user.dir"), "src", "output", file);
 		
 		try (BufferedWriter writer = Files.newBufferedWriter(p)) {
-		    for (String s: grammar.nonterminals) {
+		    for (String s: grammar.getNonterminals()) {
 		    	writer.write(s + ": " + map.get(s));
 		    	writer.newLine();
 		    }

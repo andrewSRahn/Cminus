@@ -8,9 +8,9 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Grammar {
-	public ArrayList<String> terminals = new ArrayList<String>();
-	public ArrayList<String> nonterminals = new ArrayList<String>();
-	public ArrayList<Production> productions = new ArrayList<Production>();
+	private ArrayList<String> terminals = new ArrayList<String>();
+	private ArrayList<String> nonterminals = new ArrayList<String>();
+	private ArrayList<Production> productions = new ArrayList<Production>();
 	
 	public Grammar() {
 		this.read();
@@ -25,7 +25,7 @@ public class Grammar {
 		try {
 			s = new Scanner(new BufferedReader(new FileReader("src\\input\\nonterminals.txt")));
 			while (s.hasNext()) {
-				nonterminals.add(s.next());
+				getNonterminals().add(s.next());
 			}
 		} catch (FileNotFoundException e) {
 			System.out.println("nonterminal read has failed");
@@ -35,7 +35,7 @@ public class Grammar {
 		try {
 			s = new Scanner(new BufferedReader(new FileReader("src\\input\\terminals.txt")));
 			while (s.hasNext()) {
-				terminals.add(s.next());
+				getTerminals().add(s.next());
 			}
 		} catch (FileNotFoundException e) {
 			System.out.println("terminal read has failed");
@@ -45,7 +45,7 @@ public class Grammar {
 		try {
 			s = new Scanner(new BufferedReader(new FileReader("src\\input\\productions.txt")));
 			while (s.hasNext()) {
-				productions.add(new Production(s.nextLine()));
+				getProductions().add(new Production(s.nextLine()));
 			}
 		} catch (FileNotFoundException e) {
 			System.out.println("production read has failed");
@@ -56,11 +56,37 @@ public class Grammar {
 	
 	
 	public void augment() {
-		String l = this.productions.get(0).left + "'";
+		String l = this.getProductions().get(0).getLeft() + "'";
+		this.getNonterminals().add(l);
 		l += " :: ";
-		l += this.productions.get(0).left;
+		l += this.getProductions().get(0).getLeft();
 		
 		Production p = new Production(l);
-		this.productions.add(0, p);
+		this.getProductions().add(0, p);
+		
+	}
+
+	public ArrayList<String> getTerminals() {
+		return terminals;
+	}
+
+	public void setTerminals(ArrayList<String> terminals) {
+		this.terminals = terminals;
+	}
+
+	public ArrayList<Production> getProductions() {
+		return productions;
+	}
+
+	public void setProductions(ArrayList<Production> productions) {
+		this.productions = productions;
+	}
+
+	public ArrayList<String> getNonterminals() {
+		return nonterminals;
+	}
+
+	public void setNonterminals(ArrayList<String> nonterminals) {
+		this.nonterminals = nonterminals;
 	}
 }
