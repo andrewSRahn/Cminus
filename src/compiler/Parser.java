@@ -29,7 +29,7 @@ public class Parser {
 	HashMap<String, HashSet<String>> follow;
 	
 	Grammar augmentedGrammar;
-	HashMap<Integer, ArrayList<ProductionWithDot>> items;
+	HashMap<Integer, ArrayList<Production>> items;
 	
 	
 	public Parser() {
@@ -312,7 +312,14 @@ public class Parser {
 		HashMap<Integer, ArrayList<Production>> items = new HashMap<Integer, ArrayList<Production>>();
 		ArrayList<Production> item0 = new ArrayList<Production>();
 		
-		System.out.println(items.toString());
+		Production p = new Production(augmentedGrammar.getProductions().get(0));
+		
+		
+		p.addDot();
+
+		item0.add(p);
+		closure(item0);
+		
 		
 		return new  HashMap<Integer, ArrayList<Production>>();
 	}
@@ -324,56 +331,37 @@ public class Parser {
 		while (again) { 
 			again = false;
 			
-			for (Production b: this.augmentedGrammar.getProductions()){
-				for (ListIterator<ProductionWithDot> a = j.listIterator(); a.hasNext();) {
-					ProductionWithDot c = a.next();
-					String Btoken = c.getTokenNextOfDot();
-					Production Bproduction = null;
+			for (Production production: this.augmentedGrammar.getProductions()) {
+				for (ListIterator<Production> listIterator = j.listIterator(); listIterator.hasNext();) {
+					Production A = listIterator.next();
+					String B = A.getTokenNextToDot();
 					
-					if (b.getLeft().equals(Btoken)) {
-						Bproduction = b;
-					}
-					else {
-						continue;
-					}
 					
-					ProductionWithDot Bitem = new ProductionWithDot(Bproduction);
-					
-					boolean flag = false;
-					for (ProductionWithDot x: j) {
-						if (Bitem.getFull().equals(x.getFull())) {
-							flag = true;
+					if (production.getLeft().equals(B)) {
+						Production candidate = new Production(production);
+						
+						candidate.addDot();
+						
+						
+						if(!j.contains(candidate)) {
+							
+							listIterator.add(candidate);
+							again = true;
 						}
-					}
-					
-					if (flag == true) {
-						continue;
-					}
-					else {
-						a.add(Bitem);
-						again = true;
 					}
 				}
 			}
+			
+			
+			
 		}
 		return j;
 	}
 
-	private ArrayList<ProductionWithDot> goTo(ArrayList<ProductionWithDot> i, String token) {
-		ArrayList<ProductionWithDot> j = new ArrayList<ProductionWithDot>();
+	private ArrayList<Production> goTo(ArrayList<Production> i, String token) {
+		ArrayList<Production> j = new ArrayList<Production>();
 		
-		for (ProductionWithDot k: i) {
-			if (token.equals(k.getTokenNextOfDot())) {
-				ProductionWithDot l = new ProductionWithDot(k);
-				l.shiftDot();
-
-				if (itemCheck(i, l) == false) {
-					j.add(l);
-				}
-			}
-		}
 		
-		j = closure(j);
 		
 		return j;
 	}
@@ -477,8 +465,8 @@ public class Parser {
 		return s;
 	}
 	
-	public boolean itemCheck(ArrayList<ProductionWithDot> a, ProductionWithDot b) {
-		for (ProductionWithDot c: a) {
+	public boolean itemCheck(ArrayList<Production> a, Production b) {
+		for (Production c: a) {
 			if (c.equals(b)) {
 				return true;
 			}
@@ -486,13 +474,5 @@ public class Parser {
 		return false;
 	}
 	
-	public boolean itemsCheck(HashMap<Integer, ArrayList<ProductionWithDot>> a, ArrayList<ProductionWithDot> b) {
-		for (ArrayList<ProductionWithDot> c: a.values()) {
-			if (b.containsAll(c)) {
-				return true;
-			}
-			
-		}
-		return false;
-	}
+
 }
