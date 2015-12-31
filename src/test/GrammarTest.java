@@ -6,21 +6,24 @@ import org.junit.Before;
 import org.junit.Test;
 
 import compiler.Grammar;
-import compiler.Parser;
+import compiler.Production;
 
-public class ParserTest {
+public class GrammarTest {
+	Grammar grammar;
 	Grammar augmentedGrammar;
-	Parser parser;
 	
 	@Before
 	public void setUp() throws Exception {
+		grammar = new Grammar();
 		augmentedGrammar = new Grammar();
 		augmentedGrammar.augment();
-		parser = new Parser();
+	
 	}
 
 	@Test
-	public void testClosure() {
+	public void augmentedGrammarTest() {
+		
 	}
+	
 
 }

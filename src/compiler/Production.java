@@ -37,10 +37,10 @@ public class Production {
 	}
 	
 	public Production(Production production) {
-		setFull(production.getFull());
-		setLeft(production.getLeft());
-		setRight(production.getRightTokens());
-		setRightTokens(production.getRightTokens());
+		this.full = production.getFull();
+		this.left = production.getLeft();
+		this.right = production.getRight();
+		this.rightTokens = production.getRightTokens();
 	}
 	
 	public String toString() {
