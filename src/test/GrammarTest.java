@@ -22,7 +22,6 @@ public class GrammarTest {
 
 	@Test
 	public void augmentedGrammarTest() {
-		
 	}
 	
 

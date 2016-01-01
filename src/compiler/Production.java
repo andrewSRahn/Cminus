@@ -3,6 +3,9 @@ package compiler;
 import java.security.InvalidParameterException;
 import java.util.ArrayList;
 
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+
 /*
  * Sample production  		Ss :: if ( E ) S else S
  * 				full 		Ss :: if ( E ) S else S
@@ -34,13 +37,6 @@ public class Production {
 		for (String s: split) {
 			this.getRightTokens().add(s);
 		}
-	}
-	
-	public Production(Production production) {
-		this.full = production.getFull();
-		this.left = production.getLeft();
-		this.right = production.getRight();
-		this.rightTokens = production.getRightTokens();
 	}
 	
 	public String toString() {
@@ -138,5 +134,29 @@ public class Production {
 		getRightTokens().add(index+1, ".");
 		setRight(getRightTokens());
 		setFull( getLeft() + " :: " + getRight());
+	}
+	
+	public boolean equals(Object other) {
+		if (other == null) { 
+			return false;
+		}
+		if (other == this) {
+			return true;
+		}
+		if (other.getClass() != getClass()) {
+			return false;
+		}
+		
+		Production i = (Production) other;
+		return new EqualsBuilder()
+				.append(this.full, i.full)
+				.isEquals();
+	}
+	
+	public int hashCode() {
+		return new HashCodeBuilder(17, 37)
+				.append(this.full)
+				.append(this.rightTokens)
+				.toHashCode();
 	}
 }

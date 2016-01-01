@@ -13,12 +13,14 @@ public class ProductionTest {
 	static Production p0;
 	static Production p1;
 	static Production p2;
+	static Production p3;
 	
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
 		p0 = new Production("P :: L");
 		p1 = new Production("Sl :: empty");
 		p2 = new Production("Ss :: if ( E ) S else S");
+		p3 = new Production("P' :: P");
 	}
 
 	@Test
@@ -59,6 +61,9 @@ public class ProductionTest {
 				". if ( E ) S else S");
 		assertEquals(p2.getRightTokens(),
 				Arrays.asList(".", "if", "(", "E", ")", "S", "else", "S"));
+		
+		p3.addDot();
+		System.out.println(p3);
 	}
 	
 	@Test

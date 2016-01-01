@@ -2,7 +2,9 @@ package compiler;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.ListIterator;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class Items {
 	Grammar augmentedGrammar;
@@ -15,24 +17,58 @@ public class Items {
 	
 	
 
-	private HashMap<Integer, ArrayList<Production>> constructItems() {
-		HashMap<Integer, ArrayList<Production>> items = new HashMap<Integer, ArrayList<Production>>();
+	public HashMap<Integer, ArrayList<Production>> constructItems() {
+		ArrayList<ArrayList<Production>> items = new ArrayList<ArrayList<Production>>();
 		ArrayList<Production> item0 = new ArrayList<Production>();
 		
-		Production p = new Production(augmentedGrammar.getProductions().get(0));
-		
+		Production p = new Production(augmentedGrammar.getProductions().get(0).getFull());
 		p.addDot();
+		item0.add(p);
+		items.add(closure(item0));
+		
+		ArrayList<String> grammarSymbols = augmentedGrammar.getNonterminals();
+		grammarSymbols.addAll(augmentedGrammar.getTerminals());
+		
+		boolean again = true;
+		while (again) {
+			again = false;
+			
+			for (String X: grammarSymbols) {
+				for (ListIterator<ArrayList<Production>> listIterator = items.listIterator(); listIterator.hasNext();) {
+					ArrayList<Production> currentItem = listIterator.next();
+					ArrayList<Production> nextItem = goTo(currentItem, X);
+					if (nextItem.isEmpty() == false) {
+						if (items.contains(nextItem) == false) {
+							again = true;
+							listIterator.add(currentItem);
+						}
+					}
+					System.out.println(nextItem);
+				}
+			}
+		}
+		
+		System.out.println(items.size());
 
 		
-		item0.add(p);
+
 		
 		
-		closure(item0);
-		
-		
-		return new  HashMap<Integer, ArrayList<Production>>();
+		return new HashMap<Integer, ArrayList<Production>>();
 	}
 	
+	private Integer maxPlusOne(ConcurrentHashMap<Integer, ArrayList<Production>> items) {
+		Integer max = -1;
+		for (Integer i: items.keySet()) {
+			if (i > max) {
+				max = i;
+			}
+		}
+		return max + 1;
+	}
+
+
+
 	public ArrayList<Production> closure(ArrayList<Production> i) {
 		ArrayList<Production> j = i;
 		
@@ -44,34 +80,27 @@ public class Items {
 				for (ListIterator<Production> listIterator = j.listIterator(); listIterator.hasNext();) {
 					Production A = listIterator.next();
 					String B = A.getTokenNextToDot();
-					
-					System.out.println(production.getRightTokens());
-					
 					if (production.getLeft().equals(B)) {
-						Production candidate = new Production(production);
+						Production candidate = new Production(production.getFull());
 						candidate.addDot();
-						
-						
 						if(!j.contains(candidate)) {
-							
 							listIterator.add(candidate);
 							again = true;
 						}
 					}
 				}
 			}
-			
-			
-			
 		}
 		return j;
 	}
 
-	private ArrayList<Production> goTo(ArrayList<Production> i, String token) {
-		ArrayList<Production> j = new ArrayList<Production>();
-		
-		
-		
-		return j;
+	public ArrayList<Production> goTo(ArrayList<Production> items, String query) {
+		ArrayList<Production> result = new ArrayList<Production>();
+		for (Production p: items) {
+			if (query.equals(p.getTokenNextToDot())) {
+				result.add(p);
+			}
+		}
+		return result;
 	}
 }
