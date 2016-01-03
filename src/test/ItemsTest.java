@@ -52,6 +52,8 @@ public class ItemsTest {
 		item0.add(seed);
 		item0 = items.closure(item0);
 		
+		System.out.println(items.goTo(item0, "L"));
+		
 		assertEquals(items.goTo(item0, "P").size(), 1);
 		assertEquals(items.goTo(item0, "L").size(), 2);
 		assertEquals(items.goTo(item0, "D").size(), 1);

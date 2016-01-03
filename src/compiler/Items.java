@@ -8,7 +8,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class Items {
 	Grammar augmentedGrammar;
-	HashMap<Integer, ArrayList<Production>> items;
+	ArrayList<ArrayList<Production>> items;
 	
 	public Items(Grammar augmentedGrammar) {
 		this.augmentedGrammar = augmentedGrammar;
@@ -17,7 +17,7 @@ public class Items {
 	
 	
 
-	public HashMap<Integer, ArrayList<Production>> constructItems() {
+	public ArrayList<ArrayList<Production>> constructItems() {
 		ArrayList<ArrayList<Production>> items = new ArrayList<ArrayList<Production>>();
 		ArrayList<Production> item0 = new ArrayList<Production>();
 		
@@ -25,6 +25,7 @@ public class Items {
 		p.addDot();
 		item0.add(p);
 		items.add(closure(item0));
+		
 		
 		ArrayList<String> grammarSymbols = augmentedGrammar.getNonterminals();
 		grammarSymbols.addAll(augmentedGrammar.getTerminals());
@@ -38,33 +39,32 @@ public class Items {
 					ArrayList<Production> currentItem = listIterator.next();
 					ArrayList<Production> nextItem = goTo(currentItem, X);
 					if (nextItem.isEmpty() == false) {
-						if (items.contains(nextItem) == false) {
+						if (doesContainDuplicateItem(items, nextItem) == false) {
 							again = true;
-							listIterator.add(currentItem);
+							listIterator.add(nextItem);
+
 						}
 					}
-					System.out.println(nextItem);
+
 				}
 			}
 		}
 		
+
 		System.out.println(items.size());
-
 		
-
-		
-		
-		return new HashMap<Integer, ArrayList<Production>>();
+		return items;
 	}
 	
-	private Integer maxPlusOne(ConcurrentHashMap<Integer, ArrayList<Production>> items) {
-		Integer max = -1;
-		for (Integer i: items.keySet()) {
-			if (i > max) {
-				max = i;
+	private boolean doesContainDuplicateItem(
+			ArrayList<ArrayList<Production>> items,
+			ArrayList<Production> item) {
+		for (ArrayList<Production> i: items) {
+			if (i.containsAll(item)) {
+				return true;
 			}
 		}
-		return max + 1;
+		return false;
 	}
 
 
@@ -98,9 +98,12 @@ public class Items {
 		ArrayList<Production> result = new ArrayList<Production>();
 		for (Production p: items) {
 			if (query.equals(p.getTokenNextToDot())) {
-				result.add(p);
+				Production o = new Production(p.getFull());
+				o.incrementDot();
+				result.add(o);
 			}
 		}
-		return result;
+		
+		return closure(result);
 	}
 }
