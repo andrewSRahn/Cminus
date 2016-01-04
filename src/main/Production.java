@@ -1,4 +1,4 @@
-package compiler;
+package main;
 
 import java.security.InvalidParameterException;
 import java.util.ArrayList;

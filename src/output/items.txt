@@ -1,0 +1,662 @@
+Item 0
+P' :: . P
+P :: . L
+L :: . D
+D :: . Fn
+Fn :: . Ts main ( Ps ) Cs
+Fn :: . Ts id ( Ps ) Cs
+D :: . Vd
+Vd :: . Ts id [ num ] ;
+Ts :: . void
+Ts :: . int
+Vd :: . Ts id ;
+L :: . L D
+==========================
+Item 1
+Ts :: void .
+==========================
+Item 2
+Ts :: int .
+==========================
+Item 3
+Fn :: Ts . main ( Ps ) Cs
+Fn :: Ts . id ( Ps ) Cs
+Vd :: Ts . id [ num ] ;
+Vd :: Ts . id ;
+==========================
+Item 4
+Fn :: Ts main . ( Ps ) Cs
+==========================
+Item 5
+Fn :: Ts main ( . Ps ) Cs
+Ps :: . void
+Ps :: . Pl
+Pl :: . Pa
+Pa :: . Ts id [ ]
+Ts :: . void
+Ts :: . int
+Pa :: . Ts id
+Pl :: . Pl , Pa
+==========================
+Item 6
+Fn :: Ts main ( Ps . ) Cs
+==========================
+Item 7
+Fn :: Ts main ( Ps ) . Cs
+Cs :: . { Ld Sl }
+==========================
+Item 8
+Fn :: Ts main ( Ps ) Cs .
+==========================
+Item 9
+Fn :: Ts id . ( Ps ) Cs
+Vd :: Ts id . [ num ] ;
+Vd :: Ts id . ;
+==========================
+Item 10
+Fn :: Ts id ( . Ps ) Cs
+Ps :: . void
+Ps :: . Pl
+Pl :: . Pa
+Pa :: . Ts id [ ]
+Ts :: . void
+Ts :: . int
+Pa :: . Ts id
+Pl :: . Pl , Pa
+==========================
+Item 11
+Ps :: void .
+Ts :: void .
+==========================
+Item 12
+Pl :: Pa .
+==========================
+Item 13
+Ps :: Pl .
+Pl :: Pl . , Pa
+==========================
+Item 14
+Pl :: Pl , . Pa
+Pa :: . Ts id [ ]
+Ts :: . void
+Ts :: . int
+Pa :: . Ts id
+==========================
+Item 15
+Pl :: Pl , Pa .
+==========================
+Item 16
+Fn :: Ts id ( Ps . ) Cs
+==========================
+Item 17
+Fn :: Ts id ( Ps ) . Cs
+Cs :: . { Ld Sl }
+==========================
+Item 18
+Fn :: Ts id ( Ps ) Cs .
+==========================
+Item 19
+Cs :: { . Ld Sl }
+Ld :: .
+Ld :: . Ld Vd
+==========================
+Item 20
+Cs :: { Ld . Sl }
+Sl :: .
+Sl :: . Sl S
+Ld :: Ld . Vd
+Vd :: . Ts id [ num ] ;
+Ts :: . void
+Ts :: . int
+Vd :: . Ts id ;
+==========================
+Item 21
+Ld :: Ld Vd .
+==========================
+Item 22
+Cs :: { Ld Sl . }
+Sl :: Sl . S
+S :: . Rs
+Rs :: . return E ;
+Rs :: . return ;
+S :: . Is
+Is :: . while ( E ) S
+S :: . Ss
+Ss :: . if ( E ) S else S
+Ss :: . if ( E ) S
+S :: . Cs
+Cs :: . { Ld Sl }
+S :: . Es
+Es :: . ;
+Es :: . E ;
+E :: . Se
+Se :: . Ae
+Ae :: . T
+T :: . F
+F :: . num
+F :: . C
+C :: . id ( Ar )
+F :: . V
+F :: . ( E )
+T :: . T M F
+Ae :: . Ae A T
+Se :: . Ae R Ae
+E :: . V = E
+V :: . id [ E ]
+V :: . id
+==========================
+Item 23
+S :: Cs .
+==========================
+Item 24
+Rs :: return . E ;
+E :: . Se
+Se :: . Ae
+Ae :: . T
+T :: . F
+F :: . num
+F :: . C
+C :: . id ( Ar )
+F :: . V
+F :: . ( E )
+T :: . T M F
+Ae :: . Ae A T
+Se :: . Ae R Ae
+E :: . V = E
+V :: . id [ E ]
+V :: . id
+Rs :: return . ;
+==========================
+Item 25
+Rs :: return ; .
+==========================
+Item 26
+Rs :: return E . ;
+==========================
+Item 27
+Rs :: return E ; .
+==========================
+Item 28
+Is :: while . ( E ) S
+==========================
+Item 29
+Is :: while ( . E ) S
+E :: . Se
+Se :: . Ae
+Ae :: . T
+T :: . F
+F :: . num
+F :: . C
+C :: . id ( Ar )
+F :: . V
+F :: . ( E )
+T :: . T M F
+Ae :: . Ae A T
+Se :: . Ae R Ae
+E :: . V = E
+V :: . id [ E ]
+V :: . id
+==========================
+Item 30
+Is :: while ( E . ) S
+==========================
+Item 31
+Is :: while ( E ) . S
+S :: . Rs
+Rs :: . return E ;
+Rs :: . return ;
+S :: . Is
+Is :: . while ( E ) S
+S :: . Ss
+Ss :: . if ( E ) S else S
+Ss :: . if ( E ) S
+S :: . Cs
+Cs :: . { Ld Sl }
+S :: . Es
+Es :: . ;
+Es :: . E ;
+E :: . Se
+Se :: . Ae
+Ae :: . T
+T :: . F
+F :: . num
+F :: . C
+C :: . id ( Ar )
+F :: . V
+F :: . ( E )
+T :: . T M F
+Ae :: . Ae A T
+Se :: . Ae R Ae
+E :: . V = E
+V :: . id [ E ]
+V :: . id
+==========================
+Item 32
+Is :: while ( E ) S .
+==========================
+Item 33
+Ss :: if . ( E ) S else S
+Ss :: if . ( E ) S
+==========================
+Item 34
+Ss :: if ( . E ) S else S
+E :: . Se
+Se :: . Ae
+Ae :: . T
+T :: . F
+F :: . num
+F :: . C
+C :: . id ( Ar )
+F :: . V
+F :: . ( E )
+T :: . T M F
+Ae :: . Ae A T
+Se :: . Ae R Ae
+E :: . V = E
+V :: . id [ E ]
+V :: . id
+Ss :: if ( . E ) S
+==========================
+Item 35
+Ss :: if ( E . ) S else S
+Ss :: if ( E . ) S
+==========================
+Item 36
+Ss :: if ( E ) . S else S
+S :: . Rs
+Rs :: . return E ;
+Rs :: . return ;
+S :: . Is
+Is :: . while ( E ) S
+S :: . Ss
+Ss :: . if ( E ) S else S
+Ss :: . if ( E ) S
+S :: . Cs
+Cs :: . { Ld Sl }
+S :: . Es
+Es :: . ;
+Es :: . E ;
+E :: . Se
+Se :: . Ae
+Ae :: . T
+T :: . F
+F :: . num
+F :: . C
+C :: . id ( Ar )
+F :: . V
+F :: . ( E )
+T :: . T M F
+Ae :: . Ae A T
+Se :: . Ae R Ae
+E :: . V = E
+V :: . id [ E ]
+V :: . id
+Ss :: if ( E ) . S
+==========================
+Item 37
+Ss :: if ( E ) S . else S
+Ss :: if ( E ) S .
+==========================
+Item 38
+Ss :: if ( E ) S else . S
+S :: . Rs
+Rs :: . return E ;
+Rs :: . return ;
+S :: . Is
+Is :: . while ( E ) S
+S :: . Ss
+Ss :: . if ( E ) S else S
+Ss :: . if ( E ) S
+S :: . Cs
+Cs :: . { Ld Sl }
+S :: . Es
+Es :: . ;
+Es :: . E ;
+E :: . Se
+Se :: . Ae
+Ae :: . T
+T :: . F
+F :: . num
+F :: . C
+C :: . id ( Ar )
+F :: . V
+F :: . ( E )
+T :: . T M F
+Ae :: . Ae A T
+Se :: . Ae R Ae
+E :: . V = E
+V :: . id [ E ]
+V :: . id
+==========================
+Item 39
+Ss :: if ( E ) S else S .
+==========================
+Item 40
+Cs :: { Ld Sl } .
+==========================
+Item 41
+F :: ( . E )
+E :: . Se
+Se :: . Ae
+Ae :: . T
+T :: . F
+F :: . num
+F :: . C
+C :: . id ( Ar )
+F :: . V
+F :: . ( E )
+T :: . T M F
+Ae :: . Ae A T
+Se :: . Ae R Ae
+E :: . V = E
+V :: . id [ E ]
+V :: . id
+==========================
+Item 42
+F :: ( E . )
+==========================
+Item 43
+F :: ( E ) .
+==========================
+Item 44
+F :: num .
+==========================
+Item 45
+Es :: ; .
+==========================
+Item 46
+C :: id . ( Ar )
+V :: id . [ E ]
+V :: id .
+==========================
+Item 47
+C :: id ( . Ar )
+Ar :: .
+Ar :: . Al
+Al :: . E
+E :: . Se
+Se :: . Ae
+Ae :: . T
+T :: . F
+F :: . num
+F :: . C
+C :: . id ( Ar )
+F :: . V
+F :: . ( E )
+T :: . T M F
+Ae :: . Ae A T
+Se :: . Ae R Ae
+E :: . V = E
+V :: . id [ E ]
+V :: . id
+Al :: . Al , E
+==========================
+Item 48
+Ar :: Al .
+Al :: Al . , E
+==========================
+Item 49
+Al :: Al , . E
+E :: . Se
+Se :: . Ae
+Ae :: . T
+T :: . F
+F :: . num
+F :: . C
+C :: . id ( Ar )
+F :: . V
+F :: . ( E )
+T :: . T M F
+Ae :: . Ae A T
+Se :: . Ae R Ae
+E :: . V = E
+V :: . id [ E ]
+V :: . id
+==========================
+Item 50
+Al :: Al , E .
+==========================
+Item 51
+C :: id ( Ar . )
+==========================
+Item 52
+C :: id ( Ar ) .
+==========================
+Item 53
+Al :: E .
+==========================
+Item 54
+V :: id [ . E ]
+E :: . Se
+Se :: . Ae
+Ae :: . T
+T :: . F
+F :: . num
+F :: . C
+C :: . id ( Ar )
+F :: . V
+F :: . ( E )
+T :: . T M F
+Ae :: . Ae A T
+Se :: . Ae R Ae
+E :: . V = E
+V :: . id [ E ]
+V :: . id
+==========================
+Item 55
+V :: id [ E . ]
+==========================
+Item 56
+V :: id [ E ] .
+==========================
+Item 57
+F :: C .
+==========================
+Item 58
+T :: F .
+==========================
+Item 59
+Ae :: T .
+T :: T . M F
+M :: . /
+M :: . *
+==========================
+Item 60
+M :: / .
+==========================
+Item 61
+M :: * .
+==========================
+Item 62
+T :: T M . F
+F :: . num
+F :: . C
+C :: . id ( Ar )
+F :: . V
+V :: . id [ E ]
+V :: . id
+F :: . ( E )
+==========================
+Item 63
+T :: T M F .
+==========================
+Item 64
+Se :: Ae .
+Ae :: Ae . A T
+A :: . -
+A :: . +
+Se :: Ae . R Ae
+R :: . !=
+R :: . ==
+R :: . >=
+R :: . >
+R :: . <
+R :: . <=
+==========================
+Item 65
+A :: - .
+==========================
+Item 66
+A :: + .
+==========================
+Item 67
+R :: != .
+==========================
+Item 68
+R :: == .
+==========================
+Item 69
+R :: >= .
+==========================
+Item 70
+R :: > .
+==========================
+Item 71
+R :: < .
+==========================
+Item 72
+R :: <= .
+==========================
+Item 73
+Ae :: Ae A . T
+T :: . F
+F :: . num
+F :: . C
+C :: . id ( Ar )
+F :: . V
+V :: . id [ E ]
+V :: . id
+F :: . ( E )
+T :: . T M F
+==========================
+Item 74
+Ae :: Ae A T .
+T :: T . M F
+M :: . /
+M :: . *
+==========================
+Item 75
+Se :: Ae R . Ae
+Ae :: . T
+T :: . F
+F :: . num
+F :: . C
+C :: . id ( Ar )
+F :: . V
+V :: . id [ E ]
+V :: . id
+F :: . ( E )
+T :: . T M F
+Ae :: . Ae A T
+==========================
+Item 76
+Se :: Ae R Ae .
+Ae :: Ae . A T
+A :: . -
+A :: . +
+==========================
+Item 77
+E :: Se .
+==========================
+Item 78
+F :: V .
+E :: V . = E
+==========================
+Item 79
+E :: V = . E
+E :: . Se
+Se :: . Ae
+Ae :: . T
+T :: . F
+F :: . num
+F :: . C
+C :: . id ( Ar )
+F :: . V
+F :: . ( E )
+T :: . T M F
+Ae :: . Ae A T
+Se :: . Ae R Ae
+E :: . V = E
+V :: . id [ E ]
+V :: . id
+==========================
+Item 80
+E :: V = E .
+==========================
+Item 81
+Es :: E . ;
+==========================
+Item 82
+Es :: E ; .
+==========================
+Item 83
+S :: Rs .
+==========================
+Item 84
+S :: Is .
+==========================
+Item 85
+S :: Ss .
+==========================
+Item 86
+S :: Es .
+==========================
+Item 87
+Sl :: Sl S .
+==========================
+Item 88
+Pa :: Ts . id [ ]
+Pa :: Ts . id
+==========================
+Item 89
+Pa :: Ts id . [ ]
+Pa :: Ts id .
+==========================
+Item 90
+Pa :: Ts id [ . ]
+==========================
+Item 91
+Pa :: Ts id [ ] .
+==========================
+Item 92
+Vd :: Ts id [ . num ] ;
+==========================
+Item 93
+Vd :: Ts id [ num . ] ;
+==========================
+Item 94
+Vd :: Ts id [ num ] . ;
+==========================
+Item 95
+Vd :: Ts id [ num ] ; .
+==========================
+Item 96
+Vd :: Ts id ; .
+==========================
+Item 97
+D :: Fn .
+==========================
+Item 98
+D :: Vd .
+==========================
+Item 99
+L :: D .
+==========================
+Item 100
+P :: L .
+L :: L . D
+D :: . Fn
+Fn :: . Ts main ( Ps ) Cs
+Fn :: . Ts id ( Ps ) Cs
+D :: . Vd
+Vd :: . Ts id [ num ] ;
+Ts :: . void
+Ts :: . int
+Vd :: . Ts id ;
+==========================
+Item 101
+L :: L D .
+==========================
+Item 102
+P' :: P .
+==========================

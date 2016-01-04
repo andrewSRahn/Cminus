@@ -7,7 +7,7 @@
  * 
  */
 
-package compiler;
+package main;
 
 public class Main {
 

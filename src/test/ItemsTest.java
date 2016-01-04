@@ -8,9 +8,9 @@ import java.util.Arrays;
 import org.junit.Before;
 import org.junit.Test;
 
-import compiler.Grammar;
-import compiler.Items;
-import compiler.Production;
+import main.Grammar;
+import main.Items;
+import main.Production;
 
 public class ItemsTest {
 	Grammar augmentedGrammar;
@@ -52,16 +52,23 @@ public class ItemsTest {
 		item0.add(seed);
 		item0 = items.closure(item0);
 		
-		System.out.println(items.goTo(item0, "L"));
 		
-		assertEquals(items.goTo(item0, "P").size(), 1);
-		assertEquals(items.goTo(item0, "L").size(), 2);
-		assertEquals(items.goTo(item0, "D").size(), 1);
-		assertEquals(items.goTo(item0, "Vd").size(), 1);
-		assertEquals(items.goTo(item0, "Fn").size(), 1);
-		assertEquals(items.goTo(item0, "Ts").size(), 4);
-		assertEquals(items.goTo(item0, "int").size(), 1);
-		assertEquals(items.goTo(item0, "void").size(), 1);
+//		assertEquals(items.goTo(item0, "P").size(), 1);
+//		assertEquals(items.goTo(item0, "L").size(), 2);
+//		assertEquals(items.goTo(item0, "D").size(), 1);
+//		assertEquals(items.goTo(item0, "Vd").size(), 1);
+//		assertEquals(items.goTo(item0, "Fn").size(), 1);
+//		assertEquals(items.goTo(item0, "Ts").size(), 4);
+//		assertEquals(items.goTo(item0, "int").size(), 1);
+//		assertEquals(items.goTo(item0, "void").size(), 1);
+	}
+	
+	@Test
+	public void constructItemsTest() {
+		for (int i = 0; i < items.getItems().size(); i++) {
+			System.out.print(i + " ");
+			System.out.println(items.getItems().get(i));
+		}
 	}
 
 }

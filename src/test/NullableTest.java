@@ -5,8 +5,8 @@ import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
 
-import compiler.Grammar;
-import compiler.Nullable;
+import main.Grammar;
+import main.Nullable;
 
 public class NullableTest {
 	Nullable nullable;

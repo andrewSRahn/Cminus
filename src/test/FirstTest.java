@@ -7,14 +7,15 @@ import java.util.HashSet;
 import org.junit.Before;
 import org.junit.Test;
 
-import compiler.First;
-import compiler.Grammar;
-import compiler.Nullable;
+import main.First;
+import main.Grammar;
+import main.Nullable;
 
 public class FirstTest {
 	Grammar grammar;
 	First first;
 	Nullable nullable;
+	
 	@Before
 	public void setUp() throws Exception {
 		grammar = new Grammar();

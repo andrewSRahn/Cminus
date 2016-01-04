@@ -5,8 +5,8 @@ import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
 
-import compiler.Grammar;
-import compiler.Production;
+import main.Grammar;
+import main.Production;
 
 public class GrammarTest {
 	Grammar grammar;

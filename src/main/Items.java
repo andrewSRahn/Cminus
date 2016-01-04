@@ -1,10 +1,7 @@
-package compiler;
+package main;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.ListIterator;
-import java.util.concurrent.ConcurrentHashMap;
 
 public class Items {
 	Grammar augmentedGrammar;
@@ -15,8 +12,6 @@ public class Items {
 		this.items = constructItems();
 	}
 	
-	
-
 	public ArrayList<ArrayList<Production>> constructItems() {
 		ArrayList<ArrayList<Production>> items = new ArrayList<ArrayList<Production>>();
 		ArrayList<Production> item0 = new ArrayList<Production>();
@@ -42,16 +37,11 @@ public class Items {
 						if (doesContainDuplicateItem(items, nextItem) == false) {
 							again = true;
 							listIterator.add(nextItem);
-
 						}
 					}
-
 				}
 			}
 		}
-		
-
-		System.out.println(items.size());
 		
 		return items;
 	}
@@ -105,5 +95,9 @@ public class Items {
 		}
 		
 		return closure(result);
+	}
+	
+	public ArrayList<ArrayList<Production>> getItems() {
+		return items;
 	}
 }

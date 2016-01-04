@@ -7,7 +7,7 @@ import java.util.Arrays;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import compiler.Production;
+import main.Production;
 
 public class ProductionTest {
 	static Production p0;
