@@ -57,12 +57,11 @@ public class Grammar {
 	
 	public void augment() {
 		String l = this.getProductions().get(0).getLeft() + "'";
-		this.getNonterminals().add(l);
+		getNonterminals().add(l);
 		l += " :: ";
 		l += this.getProductions().get(0).getLeft();
-		
 		Production p = new Production(l);
-		this.getProductions().add(0, p);
+		getProductions().add(0, p);
 		
 	}
 

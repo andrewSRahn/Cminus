@@ -21,8 +21,8 @@ public class Items {
 		item0.add(p);
 		items.add(closure(item0));
 		
-		
-		ArrayList<String> grammarSymbols = augmentedGrammar.getNonterminals();
+		ArrayList<String> grammarSymbols = new ArrayList<String>();
+		grammarSymbols.addAll(augmentedGrammar.getNonterminals());
 		grammarSymbols.addAll(augmentedGrammar.getTerminals());
 		
 		boolean again = true;

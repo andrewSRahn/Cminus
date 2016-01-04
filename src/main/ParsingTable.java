@@ -3,6 +3,7 @@ package main;
 import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 
 public class ParsingTable {
 	private ArrayList<HashMap<String, String>> actionList;
@@ -16,41 +17,44 @@ public class ParsingTable {
 		this.augmentedGrammar = augmentedGrammar;
 		this.follow = follow;
 		this.items = items;
-		actionList = constructActionList(augmentedGrammar, items);
+		this.actionList = constructActionList(augmentedGrammar, follow, items);
 	}
 
 
-	private ArrayList<HashMap<String, String>> constructActionList(Grammar augmentedGrammar, Items items) {
-		ArrayList<ArrayList<Production>> itemList = items.getItems();
+	private ArrayList<HashMap<String, String>> constructActionList(Grammar augmentedGrammar, Follow follow, Items items) {
 		ArrayList<HashMap<String, String>> actionList = new ArrayList<HashMap<String, String>>();
+		HashMap<String, HashSet<String>> followMap = follow.getFollowMap();
+		ArrayList<ArrayList<Production>> itemList = items.getItems();
 		
 		
+		String startTerminal = augmentedGrammar.getNonterminals().get(augmentedGrammar.getNonterminals().size() - 1);
 		
 		for (int itemNumber = 0; itemNumber < itemList.size(); itemNumber++) {
 			ArrayList<Production> item = itemList.get(itemNumber);
 			HashMap<String, String> itemMap = new HashMap<String, String>();
-			String entry = "";
+			String itemMapValue = "";
 			
-			for (String s: augmentedGrammar.getTerminals()) {
-				for (Production p: item) {
-					if (s.equals(p.getTokenNextToDot())) {
-						entry = getItemNumber(itemList, items.goTo(item, s));
-					}
+			for (Production p: item) {
+				String A = p.getLeft();
+				String a = p.getTokenNextToDot();
+				
+				if (A.equals(startTerminal)) {
+					itemMapValue = 
 				}
-				if (entry.length() == 0) {
-					entry = " ";
-				}
+				
 			}
+			
+	
 			
 			
 			
 			actionList.add(itemMap);
 		}
 		
-		for (int i = 0; i < actionList.size(); i++) {
-			System.out.print(i + " ");
-			System.out.println(actionList.get(i));
-		}
+//		for (int i = 0; i < actionList.size(); i++) {
+//			System.out.print(i + " ");
+//			System.out.println(actionList.get(i));
+//		}
 
 
 		
