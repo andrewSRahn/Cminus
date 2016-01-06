@@ -1,5 +1,6 @@
 package main;
 
+import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.ListIterator;
 
@@ -93,11 +94,25 @@ public class Items {
 				result.add(o);
 			}
 		}
-		
 		return closure(result);
 	}
 	
 	public ArrayList<ArrayList<Production>> getItems() {
 		return items;
+	}
+	
+	public int getItemNumber(ArrayList<Production> queryItem, ArrayList<ArrayList<Production>> items) {
+		for (int i = 0; i < items.size(); i++) {
+			if (items.get(i).containsAll(queryItem)) {
+				return i;
+			}
+		}
+		
+		for (Production p: queryItem){
+			System.out.println("Cannot find item.");
+			System.out.println("Given item");
+			System.out.println(p);
+		}
+		throw new InvalidParameterException();
 	}
 }
