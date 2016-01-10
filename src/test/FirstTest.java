@@ -7,9 +7,9 @@ import java.util.HashSet;
 import org.junit.Before;
 import org.junit.Test;
 
-import main.First;
-import main.Grammar;
-import main.Nullable;
+import compiler.First;
+import compiler.Grammar;
+import compiler.Nullable;
 
 public class FirstTest {
 	Grammar grammar;

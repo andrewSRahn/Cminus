@@ -7,13 +7,13 @@ import java.util.ArrayList;
 import org.junit.Before;
 import org.junit.Test;
 
-import main.First;
-import main.Follow;
-import main.Grammar;
-import main.Items;
-import main.Nullable;
-import main.ParsingTable;
-import main.Production;
+import compiler.First;
+import compiler.Follow;
+import compiler.Grammar;
+import compiler.Items;
+import compiler.Nullable;
+import compiler.ParsingTable;
+import compiler.Production;
 
 public class ParsingTableTest {
 	ParsingTable parsingTable;

@@ -1,4 +1,4 @@
-package main;
+package compiler;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -6,19 +6,19 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Formatter;
 import java.util.HashMap;
 import java.util.HashSet;
 
-
-public class Parser {
-	Grammar grammar;
-	Grammar augmentedGrammar;
-	Nullable nullable;
-	First first;
-	Follow follow;
-	Items items;
-	ParsingTable parsingTable;
+public class Main {
+	static Grammar grammar;
+	static Grammar augmentedGrammar;
+	static Nullable nullable;
+	static First first;
+	static Follow follow;
+	static Items items;
+	static ParsingTable parsingTable;
 	
 	HashMap<String, HashSet<String>> firstMap;
 	HashMap<String, HashSet<String>> followMap;
@@ -27,15 +27,15 @@ public class Parser {
 	
 	
 	
-	public Parser() {
-		this.grammar = new Grammar();
-		this.augmentedGrammar = new Grammar();
-		this.augmentedGrammar.augment();
-		this.nullable = new Nullable(grammar);
-		this.first = new First(grammar, nullable);
-		this.follow = new Follow(grammar, first);
-		this.items = new Items(augmentedGrammar);
-		this.parsingTable = new ParsingTable(augmentedGrammar, follow, items);
+	public static void main(String[] args) {
+		grammar = new Grammar();
+		augmentedGrammar = new Grammar();
+		augmentedGrammar.augment();
+		nullable = new Nullable(grammar);
+		first = new First(grammar, nullable);
+		follow = new Follow(grammar, first);
+		items = new Items(augmentedGrammar);
+		parsingTable = new ParsingTable(augmentedGrammar, follow, items);
 		
 		printMap(first.getFirstMap(), "first.txt");
 		printMap(follow.getFollowMap(), "follow.txt");
@@ -46,11 +46,16 @@ public class Parser {
 		
 		
 	}
+	
 
 
-	private void printParsingTable(ArrayList<HashMap<String, String>> actionList, ArrayList<HashMap<String, String>> goToList, String file) {
-		Path p = Paths.get(System.getProperty("user.dir"), "src", "output", file);
+	private static void printParsingTable(ArrayList<HashMap<String, String>> actionList, ArrayList<HashMap<String, String>> goToList, String file) {
+		if (actionList.size() != goToList.size()) {
+			System.out.println("Action list and GoTo list lengths do not match.");
+			throw new IllegalStateException();
+		}
 		
+		Path p = Paths.get(System.getProperty("user.dir"), "src", "output", file);
 		try (Formatter writer = new Formatter(p.toFile())) {
 			
 			// constructing formatString
@@ -77,70 +82,57 @@ public class Parser {
 			
 			// construct row that contains column headers and print
 			int columnSize = augmentedGrammar.getTerminals().size() + augmentedGrammar.getNonterminals().size() + 1;
-			Object[] stringArray = new String[columnSize];
-			stringArray[0] = "State";
+			Object[] rowArray = new String[columnSize];
+			rowArray[0] = "State";
 			for (int i = 1; i < augmentedGrammar.getTerminals().size() + 1; i++) {
-				stringArray[i] = augmentedGrammar.getTerminals().get(i - 1);
+				rowArray[i] = augmentedGrammar.getTerminals().get(i - 1);
 			}
 			for (int i = 0; i < augmentedGrammar.getNonterminals().size(); i++) {
 				int arrayPosition = i + augmentedGrammar.getTerminals().size() + 1;
-				stringArray[arrayPosition] = augmentedGrammar.getNonterminals().get(i);
+				rowArray[arrayPosition] = augmentedGrammar.getNonterminals().get(i);
 			}
 
-			writer.format(formatString, stringArray);
+			writer.format(formatString, rowArray);
 			
 			
 			// construct rest of rows and print
-			Object[] keyArray = stringArray.clone();
-			if (actionList.size() != goToList.size()) {
-				System.out.println("Action list and GoTo list do not match.");
-				throw new IllegalStateException();
-			}
-			int rowSize = actionList.size();
+			int actionListIndex = augmentedGrammar.getTerminals().size() + 1;
+			int goToListIndex = actionListIndex + augmentedGrammar.getTerminals().size() + 1;
+			Object[] actionListKeys = Arrays.copyOfRange(rowArray, 1, actionListIndex);
+			Object[] goToListKeys = Arrays.copyOfRange(rowArray, actionListIndex, goToListIndex);
 			
-			for (int i = 0; i < rowSize; i++) {
-				stringArray = new String[columnSize];
-				stringArray[0] = Integer.toString(i);
+			for (int i = 0; i < actionList.size(); i++) {
+				rowArray = new String[columnSize];
+				rowArray[0] = Integer.toString(i);
 				
-				for (int j = 0; j < actionList.size(); j++) {
-					HashMap<String, String> actionListColumn = actionList.get(j);
-					stringArray[j+1] = actionListColumn.get(keyArray[j+1]);
+				HashMap<String, String> actionMap = actionList.get(i);
+				HashMap<String, String> goToMap = goToList.get(i);
+				 
+				int index = 1;
+				for (Object s: actionListKeys) {
+					rowArray[index] = actionMap.get(s);
+					index++;
 				}
-				
-				for (int j = 0; j < goToList.size(); j++) {
-					HashMap<String, String> goToListColumn = goToList.get(j);
-					int arrayPosition = j + actionList.size() + 1;
-					stringArray[arrayPosition] = goToListColumn.get(keyArray[arrayPosition]);
+				for (Object s: goToListKeys) {
+					rowArray[index] = goToMap.get(s);
+					index++;
 				}
-				
-				
-			}
-			
-			
-			
-			writer.format(formatString, stringArray);
 
+				writer.format(formatString, rowArray);
+			}
 			
 			
 			
-		    	
+
 		    writer.close();
 		} catch (IOException x) {
 			System.out.println("Error writing " + file + ".");
 			x.printStackTrace();
 		}
-		
-		
-		
-		
-		
-		
-		
-		
 	}
 
 
-	private void printList(ArrayList<ArrayList<Production>> items, String file) {
+	private static void printList(ArrayList<ArrayList<Production>> items, String file) {
 		Path p = Paths.get(System.getProperty("user.dir"), "src", "output", file);
 		
 		try (BufferedWriter writer = Files.newBufferedWriter(p)) {
@@ -166,7 +158,7 @@ public class Parser {
 	}
 
 
-	private void printMap(HashMap<String, HashSet<String>> map, String file) {		
+	private static void printMap(HashMap<String, HashSet<String>> map, String file) {		
 		Path p = Paths.get(System.getProperty("user.dir"), "src", "output", file);
 		
 		try (BufferedWriter writer = Files.newBufferedWriter(p)) {

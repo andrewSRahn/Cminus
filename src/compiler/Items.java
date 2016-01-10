@@ -1,4 +1,4 @@
-package main;
+package compiler;
 
 import java.security.InvalidParameterException;
 import java.util.ArrayList;
@@ -113,6 +113,21 @@ public class Items {
 			System.out.println("Given item");
 			System.out.println(p);
 		}
+		throw new InvalidParameterException();
+	}
+	
+	public int findItemNumberThatContainsProduction(Production query, ArrayList<ArrayList<Production>> items) {
+		for (int i = 0; i < items.size(); i++) {
+			ArrayList<Production> item = items.get(i);
+			for (Production p: item) {
+				if (p.getFull().equals(query.getFull())) {
+					return i;
+				}
+			}
+		}
+		
+		System.out.println("Cannot find item that contains query production.");
+		System.out.println(query);
 		throw new InvalidParameterException();
 	}
 }

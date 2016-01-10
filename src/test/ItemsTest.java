@@ -8,9 +8,9 @@ import java.util.Arrays;
 import org.junit.Before;
 import org.junit.Test;
 
-import main.Grammar;
-import main.Items;
-import main.Production;
+import compiler.Grammar;
+import compiler.Items;
+import compiler.Production;
 
 public class ItemsTest {
 	Grammar augmentedGrammar;

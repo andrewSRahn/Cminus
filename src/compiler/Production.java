@@ -1,4 +1,4 @@
-package main;
+package compiler;
 
 import java.security.InvalidParameterException;
 import java.util.ArrayList;
@@ -134,6 +134,30 @@ public class Production {
 		getRightTokens().add(index+1, ".");
 		setRight(getRightTokens());
 		setFull( getLeft() + " :: " + getRight());
+	}
+	
+	public void decrementDot() {
+		if (getRightTokens().indexOf(".") == - 1) {
+			System.out.println("Cannot incrementDot.  Dot not contained in rightTokens");
+			System.out.println(full);
+			throw new IllegalStateException();
+		}
+		
+		if (getRightTokens().size() == 1) {
+			return;
+		}
+		
+		if (getRightTokens().indexOf(".") == 0) {
+			System.out.println("Cannot decrementDot.  Dot contained at left-most position");
+			System.out.println(full);
+			throw new IllegalStateException();
+		}
+		
+		int index = getRightTokens().indexOf(".");
+		getRightTokens().remove(".");
+		getRightTokens().add(index-1, ".");
+		setRight(getRightTokens());
+		setFull(getLeft() + " :: " + getRight());
 	}
 	
 	public boolean equals(Object other) {

@@ -1,6 +1,5 @@
-package main;
+package compiler;
 
-import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -82,9 +81,16 @@ public class ParsingTable {
 				
 				if (a == null 
 						&& !A.equals(startTerminal)) {
+					
+					Production target = new Production(p.getFull());
+					target.decrementDot();
+					int reduceItem = items.findItemNumberThatContainsProduction(target, itemList);
+					
 					for (String key: followMap.get(A)) {
+						
+						
 						String value = itemMap.getOrDefault(key, "");
-						value = value.concat("r" + "/");
+						value = value.concat("r" + reduceItem + "/");
 						itemMap.put(key, value);
 					}
 				}
@@ -120,7 +126,6 @@ public class ParsingTable {
 
 
 	public ArrayList<HashMap<String, String>> getGoToList() {
-		// TODO Auto-generated method stub
 		return goToList;
 	}
 	
